@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: shopflow
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment-service
+  template:
+    metadata:
+      labels:
+        app: payment-service
+    spec:
+      containers:
+      - name: payment-service
+        image: chandanvura/shopflow-payment-service:v1
+        ports:
+        - containerPort: 3005
+        env:
+        - name: PORT
+          value: "3005"
+        - name: MONGODB_URI
+          value: "mongodb://admin:shopflow123@mongodb.shopflow.svc.cluster.local:27017/shopflow-payments?authSource=admin"
+        - name: RABBITMQ_URL
+          value: "amqp://admin:shopflow123@rabbitmq.shopflow.svc.cluster.local:5672"
+        - name: ORDER_SERVICE_URL
+          value: "http://order-service.shopflow.svc.cluster.local:3004"
